@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:15.0
+    restart: always
+    environment:
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: root
+        POSTGRES_DB: pollme
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    depends_on:
+      - postgres
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_SERVER_JSON_FILE: ./pg-servers.json
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+      - ./pgpass:/pgpass
+    links:
+      - postgres:postgres
+    ports:
+      - "5050:80"
